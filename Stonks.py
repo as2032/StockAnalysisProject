@@ -1,7 +1,7 @@
 # To add a new cell, type '# %%'
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
-# Wht it dooo
+# SUP BRO
 import pandas as pd
 import bs4 as bs
 import os
