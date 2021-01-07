@@ -304,17 +304,32 @@ def main():
     curDate = dt.date.today().strftime('%Y-%m-%d')
     curDate = dt.datetime.strptime(curDate, '%Y-%m-%d')
     StartDate = curDate - dt.timedelta(days=365)
-
-    print("Enter Stocks to Track (Enter 0 to Stop):")
-    while True:
-        inp = input("Enter Ticker: ")
-        if(inp=='0'):
-            print("Current watch list: "+ str(ticker_watch_list))
-            break
-        else:
-            res = get_data(inp, StartDate, curDate)
-            if(res==0):
-                ticker_watch_list.append(inp)
+    txt_bool = input("Use Text File (watchlist.txt) as Watchlist> (Y/N): ")
+    if(txt_bool=='Y'):
+        with open("watchlist.txt") as f:
+            watch = f.read().splitlines()
+        #watch = open("watchlist.txt", 'r')
+        #Lines = watch.readlines()
+        for line in watch:
+           
+            #line.rstrip()
+            if(len(line)>=1):
+                res = get_data(line, StartDate, curDate)
+                if(res==0):
+                    ticker_watch_list.append(line)
+            else:
+                break
+    else:
+        print("Enter Stocks to Track (Enter 0 to Stop):")
+        while True:
+            inp = input("Enter Ticker: ")
+            if(inp=='0'):
+                print("Current watch list: "+ str(ticker_watch_list))
+                break
+            else:
+                res = get_data(inp, StartDate, curDate)
+                if(res==0):
+                    ticker_watch_list.append(inp)
 
     #get_data(ticker_watch_list, StartDate, curDate)
     make_data(ticker_watch_list)
