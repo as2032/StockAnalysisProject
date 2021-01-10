@@ -76,7 +76,7 @@ def get_data(ticker, start_date, end_date):
         df.to_csv('stock_csvs/{}.csv'.format(ticker))
         return 0
     except:
-        print("Not a Valid Stock Ticker")
+        print(ticker + " is not a Valid Stock Ticker")
         return 1
 
 
@@ -304,9 +304,10 @@ def main():
     curDate = dt.date.today().strftime('%Y-%m-%d')
     curDate = dt.datetime.strptime(curDate, '%Y-%m-%d')
     StartDate = curDate - dt.timedelta(days=365)
-    txt_bool = input("Use Text File (watchlist.txt) as Watchlist> (Y/N): ")
-    if(txt_bool=='Y'):
-        with open("watchlist.txt") as f:
+    txt_bool = input("Use Text File as Watchlist> (Y/N): ")
+    if(txt_bool=='Y' or txt_bool == 'y'):
+        file_name = input("Enter Text File: ")
+        with open(file_name) as f:
             watch = f.read().splitlines()
         #watch = open("watchlist.txt", 'r')
         #Lines = watch.readlines()
@@ -337,7 +338,7 @@ def main():
 
     run_daily(ticker_watch_list, curDate)
     chart_bool = input("Show all charts? (Y/N): ")
-    if(chart_bool=='Y'):
+    if(chart_bool=='Y' or chart_bool == 'y'):
         for tick in ticker_watch_list:
             show_chart(tick)
      
