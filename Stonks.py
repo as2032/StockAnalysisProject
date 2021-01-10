@@ -242,6 +242,12 @@ import datetime
 def buy_sell(stock, date):
 
     df = every_stock[stock]
+    dayno = date.weekday()
+    if(dayno==5):
+        date = date + dt.timedelta(days = -1)
+    if(dayno==6):
+        date = date + dt.timedelta(days = -2)
+        
     if df['Green Dot?'][date] == df['Lower Band'][date]:
         return 2
     if df['Color Chart'][date] == 'BWR':
