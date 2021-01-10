@@ -242,12 +242,6 @@ import datetime
 def buy_sell(stock, date):
 
     df = every_stock[stock]
-    dayno = date.weekday()
-    if(dayno==5):
-        date = date + dt.timedelta(days = -1)
-    if(dayno==6):
-        date = date + dt.timedelta(days = -2)
-        
     if df['Green Dot?'][date] == df['Lower Band'][date]:
         return 2
     if df['Color Chart'][date] == 'BWR':
@@ -256,8 +250,15 @@ def buy_sell(stock, date):
         return 0
 # %%
 def run_daily(tickers, date):
+
+    dayno = date.weekday()
+    if(dayno==5):
+        date = date + dt.timedelta(days = -1)
+    if(dayno==6):
+        date = date + dt.timedelta(days = -2)
     for ticker in tickers:
         action = buy_sell(ticker, date)
+        print("As of Market Close On: " + date.strftime("%B %d, %Y"))
         if action == 2:
             print('Buy: ' + ticker)
         if action == 1:
@@ -269,9 +270,9 @@ def run_daily(tickers, date):
 #print('On ' + str(date))
 #run_daily(ticker_watch_list, date)
 # %%
+import warnings
 
-
-
+warnings.filterwarnings("ignore")
 
 def show_chart(ticker):
     ap0 = [ 
@@ -305,6 +306,7 @@ def show_chart(ticker):
 
 
 def main():
+
     import datetime as dt
     ticker_watch_list = []
     curDate = dt.date.today().strftime('%Y-%m-%d')
@@ -363,6 +365,4 @@ if __name__ == "__main__":
 
 
 
-# To run for autmation:
-# get_data(), run_daily()
 # %% Percentage buy/sell/hold s and p?
