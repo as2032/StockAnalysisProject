@@ -256,9 +256,9 @@ def run_daily(tickers, date):
         date = date + dt.timedelta(days = -1)
     if(dayno==6):
         date = date + dt.timedelta(days = -2)
+    print("As of Market Close On: " + date.strftime("%B %d, %Y"))
     for ticker in tickers:
         action = buy_sell(ticker, date)
-        print("As of Market Close On: " + date.strftime("%B %d, %Y"))
         if action == 2:
             print('Buy: ' + ticker)
         if action == 1:
@@ -283,7 +283,7 @@ def show_chart(ticker):
         mpf.make_addplot(every_stock[ticker]['MA-30'],color='blue'),
         mpf.make_addplot(every_stock[ticker]['Fast Stochastic'],color='r',panel=2),  
         mpf.make_addplot(every_stock[ticker]['Slow Stochastic'],color='b',panel=2),
-        mpf.make_addplot(every_stock[ticker]['Green Dot?'],type='scatter', color='g', markersize=5)   
+        mpf.make_addplot(every_stock[ticker]['Green Dot?'],type='scatter', color='g', markersize=5)  
       ]
       
     mpf.plot(every_stock[ticker],title=ticker,type='candle', style='charles',volume=True,addplot=ap0,scale_width_adjustment=dict(ohlc=2.0,lines=0.4))
