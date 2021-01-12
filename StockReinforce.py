@@ -1,4 +1,5 @@
-import keras
+import tensorflow as tf
+import keras 
 from keras.models import Sequential
 from keras.models import load_model
 from keras.layers import Dense
@@ -7,6 +8,12 @@ import math
 import numpy as np
 import random
 from collections import deque
+
+
+config = tf.compat.v1.ConfigProto( device_count = {'GPU': 1, 'CPU':12 } ) 
+sess = tf.compat.v1.Session(config=config) 
+tf.compat.v1.keras.backend.set_session(sess)
+
 
 class Agent:
 
