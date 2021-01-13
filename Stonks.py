@@ -308,11 +308,12 @@ def show_chart(ticker):
 def main():
 
     import datetime as dt
+    from datetime import datetime
     ticker_watch_list = []
-    curDate = dt.date.today().strftime('%Y-%m-%d')
+    curDate = dt.datetime.today().strftime('%Y-%m-%d')
     curDate = dt.datetime.strptime(curDate, '%Y-%m-%d')
     StartDate = curDate - dt.timedelta(days=365)
-    if(curDate.time()<datetime.time(9,30)):
+    if(datetime.now().strftime("%d/%m/%Y %H:%M:%S")<datetime.now().strftime("%d/%m/%Y 09:30:00")):
         curDate = curDate + dt.timedelta(days = -1)
     txt_bool = input("Use Text File as Watchlist> (Y/N): ")
     if(txt_bool=='Y' or txt_bool == 'y'):
