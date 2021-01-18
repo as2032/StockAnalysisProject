@@ -217,6 +217,7 @@ def make_data(ticker_watch_list):
             
 
         every_stock[stock] = stock_df
+        #return every_stock
         
 
     #pd.set_option('display.max_columns', 30)
@@ -242,15 +243,83 @@ def make_data(ticker_watch_list):
 # %%
 import datetime
 
-def buy_sell(stock, date):
-
+def buy_sell(total_fund, stock, date, num_shares, num_stocks_held, stocks_owned, shares_bought, max_stocks, endDate):
+    date_time_str = '2021-01-04 00:00:00'
+    date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
     df = every_stock[stock]
-    if df['Green Dot?'][date] == df['Lower Band'][date]:
+    if df['Color Chart'][date] == 'RWB' and df['Green Dot?'][date] == df['Lower Band'][date] and not (stock in stocks_owned) and total_fund != 0 and len(stocks_owned) < max_stocks and date != date_time_obj:
+        print("\nBuying " + str(stock) + " at: " + str(date) + "\n" + str(num_shares) + " shares\n" + str(df['Open'][date]) + " per share")
         return 2
-    if df['Color Chart'][date] == 'BWR':
+    if df['Color Chart'][date] == 'BWR' and (stock in stocks_owned):
+        print("\nSelling " + str(stock) + " becasue of BWR: " + str(date)  + "\n" + str(shares_bought[stocks_owned.index(str(stock))]) + " shares\n" + str(df['Adj Close'][date]) + " per share")
         return 1
+    if date == date_time_obj and (stock in stocks_owned):
+        print("\nSelling " + str(stock) + " at end of year at " + str(df['Adj Close'][date]) + " per share" + " for " + str((shares_bought[stocks_owned.index(str(stock))] * df['Adj Close'][date])))
+        return 3
     else: 
         return 0
+
+
+def trade(portfolio, original_p, date, df, stocks_owned, shares_bought, num_stocks_held, max_stocks, ticker, endDate):
+    num_stocks_held = len(stocks_owned) 
+    if (((original_p / max_stocks) / (df['Open'][date])) > 0.0): 
+        if portfolio > (original_p / max_stocks):
+            num_shares = ((original_p / max_stocks) / df['Open'][date]) 
+        else:
+            num_shares = portfolio / df['Open'][date]
+    
+    buy_sell_hold = buy_sell(portfolio, ticker, date, num_shares, num_stocks_held, stocks_owned, shares_bought, max_stocks, endDate)
+
+    if buy_sell_hold == 2 and len(stocks_owned) <= max_stocks:
+        print("Portfolio Value before buying " + str(ticker) + " = " + str(portfolio))
+        stocks_owned.append(ticker)
+        shares_bought.append(num_shares)
+        s = (shares_bought[stocks_owned.index(str(ticker))])
+        portfolio = portfolio - (s * df['Open'][date])
+        print("Portfolio Value after buying " + str(ticker) + " = " + str(portfolio))
+        return portfolio
+    elif buy_sell_hold == 1 and (ticker in stocks_owned):
+        portfolio = portfolio + (shares_bought[stocks_owned.index(str(ticker))] * df['Adj Close'][date])
+        shares_bought.remove(shares_bought[stocks_owned.index(str(ticker))])
+        stocks_owned.remove(str(ticker))
+        print("Portfolio value = " + str(portfolio))
+        return portfolio
+    elif buy_sell_hold == 3 and (ticker in stocks_owned):
+        portfolio = portfolio + (shares_bought[stocks_owned.index(str(ticker))] * df['Adj Close'][date])
+        shares_bought.remove(shares_bought[stocks_owned.index(str(ticker))])
+        stocks_owned.remove(str(ticker))
+        print("Portfolio value = " + str(portfolio))
+        return portfolio
+    else:
+        return portfolio
+
+
+def run_simulation(portfolio, max_stocks, startDate, endDate, every_stock):
+    original_p = portfolio
+    stocks_owned = []
+    shares_bought = []
+    stocks_processed = []
+    num_stocks_held = 0
+    dates = []
+   
+
+    df = every_stock['TSLA']
+    for date in df.index:
+        dates.append(date)
+
+    for date in dates:
+        for stock in every_stock:
+            if date >= every_stock[stock].index[0]:
+                ticker = stock
+                portfolio = trade(portfolio, original_p, date, every_stock[stock], stocks_owned, shares_bought, num_stocks_held, max_stocks, ticker, endDate)
+
+    print("\n")
+    print("Final portfolio value: " + str(portfolio))
+    if original_p > portfolio:
+        print("Percent made in the year: " + "-" + str((1 - (portfolio / original_p)) * 100) + "%")
+    else:
+        print("Percent made in the year: " + str(100 * ((portfolio / original_p) -1)) + "%")
+
 # %%
 def run_daily(tickers, date):
 
@@ -261,13 +330,8 @@ def run_daily(tickers, date):
         date = date + dt.timedelta(days = -2)
     print("As of Market Close On: " + date.strftime("%B %d, %Y"))
     for ticker in tickers:
-        action = buy_sell(ticker, date)
-        if action == 2:
-            print('Buy: ' + ticker)
-        if action == 1:
-            print('Sell: ' + ticker)
-        if action == 0:
-            print('Hold: ' + ticker)
+        buy_sell(portfolio, ticker, date, num_shares, num_stocks_held, stocks_owned, shares_bought, max_stocks)
+
 # %%
 #date = '2021-1-6 00:00:00'
 #print('On ' + str(date))
@@ -277,32 +341,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-def show_chart(ticker):
-    ap0 = [ 
-        mpf.make_addplot(every_stock[ticker]['Upper Band'],color='grey'),  
-        mpf.make_addplot(every_stock[ticker]['Lower Band'],color='grey'),  
-        mpf.make_addplot(every_stock[ticker]['MA-4'],color='red'),
-        mpf.make_addplot(every_stock[ticker]['MA-10'],color='green'),
-        mpf.make_addplot(every_stock[ticker]['MA-30'],color='blue'),
-        mpf.make_addplot(every_stock[ticker]['Fast Stochastic'],color='r',panel=2),  
-        mpf.make_addplot(every_stock[ticker]['Slow Stochastic'],color='b',panel=2),
-        mpf.make_addplot(every_stock[ticker]['Green Dot?'],type='scatter', color='g', markersize=5)  
-      ]
-      
-    mpf.plot(every_stock[ticker],title=ticker,type='candle', style='charles',volume=True,addplot=ap0,scale_width_adjustment=dict(ohlc=2.0,lines=0.4))
-
-
-# def appendToWatch(ticker):
-#     ticker_watch_list.append(ticker)
-
-
-
-
-# def runList(curDate, start_date):
-#     curDate = dt.strptime(curDate , '%Y-%m-%d')
-#     start_date = dt.strptime(start_date, '%Y-%m-%d')
-#     getData(curDate, start_date)
-#     run_daily(ticker_watch_list, curDate)
 
 
     
@@ -313,23 +351,21 @@ def main():
     import datetime as dt
     from datetime import datetime
     ticker_watch_list = []
-    curDate = dt.datetime.today().strftime('%Y-%m-%d')
-    curDate = dt.datetime.strptime(curDate, '%Y-%m-%d')
-    StartDate = curDate - dt.timedelta(days=365)
-    if(datetime.now().strftime("%d/%m/%Y %H:%M:%S")<datetime.now().strftime("%d/%m/%Y 09:30:00")):
-        curDate = curDate + dt.timedelta(days = -1)
+    startDate = input("Enter Start Date (Y-M-D): ")
+    endDate = input("Enter End Date (Y-M-D): ")
+    startDate = dt.datetime.strptime(startDate, '%Y-%m-%d')
+    endDate = dt.datetime.strptime(endDate, '%Y-%m-%d')
+    amount = int(input("Enter Starting Portfolio Value: "))
+    
     txt_bool = input("Use Text File as Watchlist> (Y/N): ")
     if(txt_bool=='Y' or txt_bool == 'y'):
         file_name = input("Enter Text File: ")
         with open(file_name) as f:
             watch = f.read().splitlines()
-        #watch = open("watchlist.txt", 'r')
-        #Lines = watch.readlines()
         for line in watch:
-           
-            #line.rstrip()
+
             if(len(line)>=1):
-                res = get_data(line, StartDate, curDate)
+                res = get_data(line, startDate, endDate)
                 if(res==0):
                     ticker_watch_list.append(line)
             else:
@@ -342,19 +378,15 @@ def main():
                 print("Current watch list: "+ str(ticker_watch_list))
                 break
             else:
-                res = get_data(inp, StartDate, curDate)
+                res = get_data(inp, startDate, endDate)
                 if(res==0):
                     ticker_watch_list.append(inp)
 
     #get_data(ticker_watch_list, StartDate, curDate)
     make_data(ticker_watch_list)
-    print("After running indicators (RWB, Green Dot):")
-
-    run_daily(ticker_watch_list, curDate)
-    chart_bool = input("Show all charts? (Y/N): ")
-    if(chart_bool=='Y' or chart_bool == 'y'):
-        for tick in ticker_watch_list:
-            show_chart(tick)
+    
+    run_simulation(amount, 6, startDate, endDate, every_stock)
+    
      
     print("Done!")   
 
