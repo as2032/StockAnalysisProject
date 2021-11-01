@@ -1,3 +1,3 @@
 # StockAnalysisProject
 
-STONKSSSSS
+The ‘Stock Bot’ project is a programming project completed as a collaborative effort between William Sharp and Alexander Straub. The stock bot uses APIs and scrapers to get stock data, uses various functions to compute market indicators, then tells the end-user to buy/sell/hold a given stock. The process is also by incorporating the bot into discord. The program also allows you to save multiple watch lists of stocks and run the entire list through the bot upon command. The integration with discord has made the bot extremely easy to use and recieved positive feedback from those who used it in discord server(s). In the near future, we plan to add a variety of new features including sector-by-sector analysis and cryptocurrency support.
