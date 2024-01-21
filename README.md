@@ -26,4 +26,4 @@ To run this project locally, follow these steps:
 - Discord API (for Discord Bot integration)
 
 ## Discord Bot Integration
-### A Discord bot with features derived from this repository can be found [here](https://github.com/as2032/StockBot)
+A Discord bot with features derived from this repository can be found [here](https://github.com/as2032/StockBot)
