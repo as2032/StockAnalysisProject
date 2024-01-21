@@ -1,3 +1,26 @@
-# StockAnalysisProject
 
-The ‘Stock Bot’ project is a programming project completed as a collaborative effort between William Sharp and Alexander Straub. The stock bot uses APIs and scrapers to get stock data, uses various functions to compute market indicators, then tells the end-user to buy/sell/hold a given stock. The process is also by incorporating the bot into discord. The program also allows you to save multiple watch lists of stocks and run the entire list through the bot upon command. The integration with discord has made the bot extremely easy to use and recieved positive feedback from those who used it in discord server(s). In the near future, we plan to add a variety of new features including sector-by-sector analysis and cryptocurrency support.
+# Stock Analysis Project
+
+This project is a collaborative effort between Alexander Straub and William Sharp. We employed Yahoo Finance's API to obtain live data and used NumPy to compute leading market indicators. We trained ensemble classifiers from Scikit-Learn to assess confidence in our predicted movement for a given stock. In a simulation, our trading strategy outperformed the S&P 500 by 5%. The application also creates charts using Matplotlib and is integrated into a Discord Bot deployed on a cloud server.
+
+## Usage Examples
+
+Usage examples can be found in the `FinalTutScript.py` file.
+
+## Installation
+
+To run this project locally, follow these steps:
+
+1. Clone this repository: git clone https://github.com/as2032/StockAnalysisProject.git
+2. Navigate to the project directory
+3. Install the required dependencies using pip
+4. Run the project
+
+
+## Dependencies
+
+- Yahoo Finance's API
+- NumPy
+- Scikit-Learn
+- Matplotlib
+- Discord API (for Discord Bot integration)
