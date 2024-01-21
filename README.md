@@ -14,7 +14,7 @@ To run this project locally, follow these steps:
 1. Clone this repository: git clone https://github.com/as2032/StockAnalysisProject.git
 2. Navigate to the project directory
 3. Install the required dependencies using pip
-4. Run the project
+4. Run the project ```python FinalTutScript.py```
 
 
 ## Dependencies
@@ -24,3 +24,6 @@ To run this project locally, follow these steps:
 - Scikit-Learn
 - Matplotlib
 - Discord API (for Discord Bot integration)
+
+## Discord Bot Integration
+### A Discord bot with features derived from this repository can be found [here](https://github.com/as2032/StockBot)
